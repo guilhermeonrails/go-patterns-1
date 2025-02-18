@@ -4,30 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"myapi/internal/models"
 	"net/http"
 	"strconv"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
-
-// Modelo para a tabela "itens"
-type Iten struct {
-	Id         uint    `gorm:"primaryKey" json:"id"`
-	Nome       string  `json:"nome"`
-	Codigo     string  `gorm:"unique" json:"codigo"`
-	Descricao  string  `json:"descricao"`
-	Preco      float64 `json:"preco"`
-	Quantidade int     `json:"quantidade"`
-}
-
-// Modelo para a tabela "categorias"
-type Cat struct {
-	Id        uint   `gorm:"primaryKey" json:"id"`
-	Nome      string `json:"nome"`
-	Codigo    string `gorm:"unique" json:"codigo"`
-	Descricao string `json:"descricao"`
-}
 
 var bd *gorm.DB
 
@@ -41,8 +24,8 @@ func main() {
 	bd = db
 
 	// AutoMigrate para criar/ajustar tabelas
-	bd.AutoMigrate(&Iten{})
-	bd.AutoMigrate(&Cat{})
+	bd.AutoMigrate(&models.Iten{})
+	bd.AutoMigrate(&models.Cat{})
 
 	// Endpoint raiz
 	http.HandleFunc("/api", indexHandler)
@@ -80,7 +63,7 @@ func listItensHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var itens []Iten
+	var itens []models.Iten
 	if err := bd.Find(&itens).Error; err != nil {
 		http.Error(w, "Erro ao buscar itens", http.StatusInternalServerError)
 		return
@@ -105,7 +88,7 @@ func getItenHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "ID inválido", http.StatusBadRequest)
 		return
 	}
-	var item Iten
+	var item models.Iten
 	if err := bd.First(&item, id).Error; err != nil {
 		http.Error(w, "Item não encontrado", http.StatusNotFound)
 		return
@@ -125,7 +108,7 @@ func getItenByCodigoHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Código não fornecido", http.StatusBadRequest)
 		return
 	}
-	var item Iten
+	var item models.Iten
 	// Busca o item onde o campo "codigo" é igual ao valor fornecido
 	if err := bd.Where("codigo = ?", cod).First(&item).Error; err != nil {
 		http.Error(w, "Item não encontrado", http.StatusNotFound)
@@ -141,7 +124,7 @@ func createItenHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var item Iten
+	var item models.Iten
 	if err := json.NewDecoder(r.Body).Decode(&item); err != nil {
 		http.Error(w, "Erro ao decodificar o item", http.StatusBadRequest)
 		return
@@ -160,7 +143,7 @@ func updateItenHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var item Iten
+	var item models.Iten
 	if err := json.NewDecoder(r.Body).Decode(&item); err != nil {
 		http.Error(w, "Erro ao decodificar o item", http.StatusBadRequest)
 		return
@@ -188,7 +171,7 @@ func deleteItenHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "ID inválido", http.StatusBadRequest)
 		return
 	}
-	if err := bd.Delete(&Iten{}, id).Error; err != nil {
+	if err := bd.Delete(&models.Iten{}, id).Error; err != nil {
 		http.Error(w, "Erro ao deletar o item", http.StatusInternalServerError)
 		return
 	}
@@ -204,7 +187,7 @@ func listCategoriasHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var cats []Cat
+	var cats []models.Cat
 	if err := bd.Find(&cats).Error; err != nil {
 		http.Error(w, "Erro ao buscar categorias", http.StatusInternalServerError)
 		return
@@ -229,7 +212,7 @@ func getCategoriaHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "ID inválido", http.StatusBadRequest)
 		return
 	}
-	var cat Cat
+	var cat models.Cat
 	if err := bd.First(&cat, id).Error; err != nil {
 		http.Error(w, "Categoria não encontrada", http.StatusNotFound)
 		return
@@ -244,7 +227,7 @@ func createCategoriaHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var cat Cat
+	var cat models.Cat
 	if err := json.NewDecoder(r.Body).Decode(&cat); err != nil {
 		http.Error(w, "Erro ao decodificar a categoria", http.StatusBadRequest)
 		return
@@ -263,7 +246,7 @@ func updateCategoriaHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var cat Cat
+	var cat models.Cat
 	if err := json.NewDecoder(r.Body).Decode(&cat); err != nil {
 		http.Error(w, "Erro ao decodificar a categoria", http.StatusBadRequest)
 		return
@@ -291,7 +274,7 @@ func deleteCategoriaHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "ID inválido", http.StatusBadRequest)
 		return
 	}
-	if err := bd.Delete(&Cat{}, id).Error; err != nil {
+	if err := bd.Delete(&models.Cat{}, id).Error; err != nil {
 		http.Error(w, "Erro ao deletar a categoria", http.StatusInternalServerError)
 		return
 	}
