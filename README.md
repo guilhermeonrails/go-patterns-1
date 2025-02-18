@@ -12,13 +12,7 @@ Este projeto é uma API REST desenvolvida em Golang utilizando o framework Gin. 
 
 ## Instalação e Configuração
 
-### **1. Clone o repositório**
-```bash
-git clone https://github.com/seu-usuario/nome-do-repositorio.git
-cd nome-do-repositorio
-```
-
-Se estiver usando Docker, execute:
+Usando Docker, execute:
 ```bash
 docker-compose up -d
 ```
