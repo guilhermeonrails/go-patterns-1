@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"myapi/internal/config"
 	"myapi/internal/models"
+	"myapi/internal/services"
 	"net/http"
 	"strconv"
 )
@@ -83,11 +84,16 @@ func CreateItenHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Erro ao decodificar o item", http.StatusBadRequest)
 		return
 	}
-	if err := config.DB.Create(&item).Error; err != nil {
+	createdItem, err := services.CreateItem(&item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if err := config.DB.Create(&createdItem).Error; err != nil {
 		http.Error(w, "Erro ao criar o item", http.StatusInternalServerError)
 		return
 	}
-	json.NewEncoder(w).Encode(item)
+	json.NewEncoder(w).Encode(createdItem)
 }
 
 // Atualizar um item (envie JSON via PUT, com o campo id preenchido)
