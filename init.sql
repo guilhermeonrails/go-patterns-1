@@ -64,7 +64,7 @@ INSERT INTO itens (nome, codigo, descricao, preco, quantidade) VALUES
 --------------------------------------------------
 
 -- Cria a tabela "categorias"
-CREATE TABLE IF NOT EXISTS cats (
+CREATE TABLE IF NOT EXISTS categoria (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     codigo VARCHAR(50) NOT NULL UNIQUE,
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS cats (
 );
 
 -- Insere 5 categorias de produtos
-INSERT INTO cats (nome, codigo, descricao) VALUES
+INSERT INTO categoria (nome, codigo, descricao) VALUES
 ('Eletrônicos', 'ELEC', 'Produtos eletrônicos em geral.'),
 ('Periféricos', 'PERI', 'Acessórios e periféricos para computadores.'),
 ('Informática', 'INFO', 'Componentes e equipamentos de informática.'),
