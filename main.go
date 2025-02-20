@@ -18,12 +18,12 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/api/itens", handlers.ListItensHandler).Methods("GET")
-	r.HandleFunc("/api/itens/{id}", handlers.GetItenHandler).Methods("GET")
-	r.HandleFunc("/api/itens/codigo/{codigo}", handlers.GetItenByCodigoHandler).Methods("GET")
-	r.HandleFunc("/api/itens", handlers.CreateItenHandler).Methods("POST")
-	r.HandleFunc("/api/itens", handlers.UpdateItenHandler).Methods("PUT")
-	r.HandleFunc("/api/itens", handlers.DeleteItenHandler).Methods("DELETE")
+	r.HandleFunc("/api/itens", handlers.ListItens).Methods("GET")
+	r.HandleFunc("/api/itens/{id}", handlers.GetItem).Methods("GET")
+	r.HandleFunc("/api/itens/codigo/{codigo}", handlers.GetItemByCode).Methods("GET")
+	r.HandleFunc("/api/itens", handlers.CreateItem).Methods("POST")
+	r.HandleFunc("/api/itens", handlers.UpdateItem).Methods("PUT")
+	r.HandleFunc("/api/itens", handlers.DeleteItem).Methods("DELETE")
 
 	// Endpoints para Categorias
 	r.HandleFunc("/categorias", listCategoriasHandler)

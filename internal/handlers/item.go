@@ -8,16 +8,14 @@ import (
 	"myapi/internal/services"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 // ==================== HANDLERS PARA ITENS ====================
 
 // Listar todos os itens
-func ListItensHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-		return
-	}
+func ListItens(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	repository := repositories.NewItemRepository()
 	items, err := repository.ListAll()
@@ -29,13 +27,10 @@ func ListItensHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // Buscar um único item pelo id (via query string: ?id=1)
-func GetItenHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-		return
-	}
+func GetItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	idStr := r.URL.Query().Get("id")
+	vars := mux.Vars(r)
+	idStr := vars["id"]
 	if idStr == "" {
 		http.Error(w, "ID não fornecido", http.StatusBadRequest)
 		return
@@ -54,13 +49,10 @@ func GetItenHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // Buscar um item pelo campo "codigo"
-func GetItenByCodigoHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-		return
-	}
+func GetItemByCode(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	cod := r.URL.Query().Get("codigo")
+	vars := mux.Vars(r)
+	cod := vars["codigo"]
 	if cod == "" {
 		http.Error(w, "Código não fornecido", http.StatusBadRequest)
 		return
@@ -75,11 +67,7 @@ func GetItenByCodigoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // Criar um novo item (envie JSON via POST)
-func CreateItenHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-		return
-	}
+func CreateItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var item models.Iten
 	if err := json.NewDecoder(r.Body).Decode(&item); err != nil {
@@ -99,11 +87,7 @@ func CreateItenHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // Atualizar um item (envie JSON via PUT, com o campo id preenchido)
-func UpdateItenHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "PUT" {
-		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-		return
-	}
+func UpdateItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var item models.Iten
 	if err := json.NewDecoder(r.Body).Decode(&item); err != nil {
@@ -118,12 +102,9 @@ func UpdateItenHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // Deletar um item (via query string: ?id=1)
-func DeleteItenHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "DELETE" {
-		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-		return
-	}
-	idStr := r.URL.Query().Get("id")
+func DeleteItem(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	idStr := vars["id"]
 	if idStr == "" {
 		http.Error(w, "ID não fornecido", http.StatusBadRequest)
 		return
