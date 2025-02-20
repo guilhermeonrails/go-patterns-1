@@ -23,7 +23,7 @@ func main() {
 	r.HandleFunc("/api/itens/codigo/{codigo}", handlers.GetItemByCode).Methods("GET")
 	r.HandleFunc("/api/itens", handlers.CreateItem).Methods("POST")
 	r.HandleFunc("/api/itens", handlers.UpdateItem).Methods("PUT")
-	r.HandleFunc("/api/itens", handlers.DeleteItem).Methods("DELETE")
+	r.HandleFunc("/api/itens/{id}", handlers.DeleteItem).Methods("DELETE")
 
 	// Endpoints para Categorias
 	r.HandleFunc("/categorias", listCategoriasHandler)
@@ -33,7 +33,7 @@ func main() {
 	r.HandleFunc("/categorias/delete", deleteCategoriaHandler)
 
 	log.Println("Servidor rodando na porta 8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
 
 // ==================== HANDLERS PARA CATEGORIAS ====================
