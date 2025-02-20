@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"myapi/internal/config"
 	"myapi/internal/handlers"
@@ -19,31 +18,22 @@ func main() {
 
 	r := mux.NewRouter()
 
-	// Endpoint raiz
-	r.HandleFunc("/api", indexHandler)
-
-	// Endpoints para /Itens .(post)
-	r.HandleFunc("/itens", handlers.ListItensHandler)                // GET para listar todos os itens
-	r.HandleFunc("/itens/get", handlers.GetItenHandler)              // GET para buscar um item (espera id via query: ?id=1)
-	r.HandleFunc("/itens/get-code", handlers.GetItenByCodigoHandler) // get-code?codigo=TEC001
-	r.HandleFunc("/itens/create", handlers.CreateItenHandler)        // POST para criar um item
-	r.HandleFunc("/itens/update", handlers.UpdateItenHandler)        // PUT para atualizar um item (JSON com id)
-	r.HandleFunc("/itens/delete", handlers.DeleteItenHandler)        // DELETE para deletar um item (espera id via query: ?id=1)
+	r.HandleFunc("/api/itens", handlers.ListItensHandler).Methods("GET")
+	r.HandleFunc("/api/itens/{id}", handlers.GetItenHandler).Methods("GET")
+	r.HandleFunc("/api/itens/codigo/{codigo}", handlers.GetItenByCodigoHandler).Methods("GET")
+	r.HandleFunc("/api/itens", handlers.CreateItenHandler).Methods("POST")
+	r.HandleFunc("/api/itens", handlers.UpdateItenHandler).Methods("PUT")
+	r.HandleFunc("/api/itens", handlers.DeleteItenHandler).Methods("DELETE")
 
 	// Endpoints para Categorias
-	r.HandleFunc("/categorias", listCategoriasHandler)         // GET para listar todas as categorias
-	r.HandleFunc("/categorias/get", getCategoriaHandler)       // GET para buscar uma categoria (espera id via query)
-	r.HandleFunc("/categorias/create", createCategoriaHandler) // POST para criar uma categoria
-	r.HandleFunc("/categorias/update", updateCategoriaHandler) // PUT para atualizar uma categoria (JSON com id)
-	r.HandleFunc("/categorias/delete", deleteCategoriaHandler) // DELETE para deletar uma categoria (espera id via query)
+	r.HandleFunc("/categorias", listCategoriasHandler)
+	r.HandleFunc("/categorias/get", getCategoriaHandler)
+	r.HandleFunc("/categorias/create", createCategoriaHandler)
+	r.HandleFunc("/categorias/update", updateCategoriaHandler)
+	r.HandleFunc("/categorias/delete", deleteCategoriaHandler)
 
 	log.Println("Servidor rodando na porta 8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
-}
-
-// Handler raiz
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "API Go!")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 // ==================== HANDLERS PARA CATEGORIAS ====================
