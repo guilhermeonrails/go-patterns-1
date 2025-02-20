@@ -9,32 +9,36 @@ import (
 	"myapi/internal/models"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
 
 	config.ConnectDatabase()
 
-	// Endpoint raiz
-	http.HandleFunc("/api", indexHandler)
+	r := mux.NewRouter()
 
-	// Endpoints para Itens
-	http.HandleFunc("/itens", handlers.ListItensHandler)                // GET para listar todos os itens
-	http.HandleFunc("/itens/get", handlers.GetItenHandler)              // GET para buscar um item (espera id via query: ?id=1)
-	http.HandleFunc("/itens/get-code", handlers.GetItenByCodigoHandler) // get-code?codigo=TEC001
-	http.HandleFunc("/itens/create", handlers.CreateItenHandler)        // POST para criar um item
-	http.HandleFunc("/itens/update", handlers.UpdateItenHandler)        // PUT para atualizar um item (JSON com id)
-	http.HandleFunc("/itens/delete", handlers.DeleteItenHandler)        // DELETE para deletar um item (espera id via query: ?id=1)
+	// Endpoint raiz
+	r.HandleFunc("/api", indexHandler)
+
+	// Endpoints para /Itens .(post)
+	r.HandleFunc("/itens", handlers.ListItensHandler)                // GET para listar todos os itens
+	r.HandleFunc("/itens/get", handlers.GetItenHandler)              // GET para buscar um item (espera id via query: ?id=1)
+	r.HandleFunc("/itens/get-code", handlers.GetItenByCodigoHandler) // get-code?codigo=TEC001
+	r.HandleFunc("/itens/create", handlers.CreateItenHandler)        // POST para criar um item
+	r.HandleFunc("/itens/update", handlers.UpdateItenHandler)        // PUT para atualizar um item (JSON com id)
+	r.HandleFunc("/itens/delete", handlers.DeleteItenHandler)        // DELETE para deletar um item (espera id via query: ?id=1)
 
 	// Endpoints para Categorias
-	http.HandleFunc("/categorias", listCategoriasHandler)         // GET para listar todas as categorias
-	http.HandleFunc("/categorias/get", getCategoriaHandler)       // GET para buscar uma categoria (espera id via query)
-	http.HandleFunc("/categorias/create", createCategoriaHandler) // POST para criar uma categoria
-	http.HandleFunc("/categorias/update", updateCategoriaHandler) // PUT para atualizar uma categoria (JSON com id)
-	http.HandleFunc("/categorias/delete", deleteCategoriaHandler) // DELETE para deletar uma categoria (espera id via query)
+	r.HandleFunc("/categorias", listCategoriasHandler)         // GET para listar todas as categorias
+	r.HandleFunc("/categorias/get", getCategoriaHandler)       // GET para buscar uma categoria (espera id via query)
+	r.HandleFunc("/categorias/create", createCategoriaHandler) // POST para criar uma categoria
+	r.HandleFunc("/categorias/update", updateCategoriaHandler) // PUT para atualizar uma categoria (JSON com id)
+	r.HandleFunc("/categorias/delete", deleteCategoriaHandler) // DELETE para deletar uma categoria (espera id via query)
 
 	log.Println("Servidor rodando na porta 8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
 
 // Handler raiz
